@@ -5,7 +5,8 @@ import os
 import random
 import re
 import sys
-from collections import Counter
+from collections import defaultdict
+
 
 #
 # Complete the 'activityNotifications' function below.
@@ -18,10 +19,15 @@ from collections import Counter
 
 def activityNotifications(expenditure, d):
     count, k = 0, []
+    ase = defaultdict(int)
     k = expenditure
     m = k[:d].copy()
     m.sort()
     ind = d // 2
+    for key,val in enumerate(k[:d]):
+        ase[val] += 1
+    asd = ase.items()
+    asd = sorted(asd)
 
     if d % 2 != 0:
         for indx, arr in enumerate(expenditure[d:]):
@@ -40,12 +46,11 @@ def activityNotifications(expenditure, d):
                 m.pop(m.index(k[indx]))
                 ordinary_sort(k, m, arr)
             else:
-                print(indx)
 
                 m.pop(m.index(k[indx]))
                 ordinary_sort(k, m, arr)
     print(count)
-    print(ind)
+
     return count
 
 
@@ -54,18 +59,33 @@ def ordinary_sort(lst, srt, element):
         srt.append(element)
     elif element <= srt[0]:
         srt.insert(0, element)
+    elif element in srt:
+        srt.insert(srt.index(element), element)
     else:
-        start,  lng = 0, len(srt)
-        lng = len(srt) if len(srt) < 1000 else int(round(lng, -2)) + 1
-        steps = 1 if lng < 1000 else int(round(len(srt) / 10, -2))
-        while any([element - x <= 0 for x in srt[start:lng:steps]]):
-            indis = [x for x in range(start, lng, steps)]
-            indis_boolean = [element - x <= 0 for x in srt[start:lng:steps]]
-            start, lng = indis[indis_boolean.index(True) - 1], indis[indis_boolean.index(True)]
-            steps = int(round((lng - start) / 10, -2))
-            if steps <= 100:
-                srt.insert(start + [element - x <= 0 for x in srt[start:lng + 1]].index(True), element)
-                break
+        start, lng = 0, len(srt)
+        steps = 1 if len(srt) < 1000 else int(round(len(srt) / 10, -2))
+        if srt.index(element) - lng // 2 <= 0:
+            while any([element - x <= 0 for x in srt[start:lng + 1:steps]]):
+                indis = [x for x in range(start, lng + 1, steps)]
+                indis_boolean = [element - x <= 0 for x in srt[start:lng + 1:steps]]
+                start, lng = indis[indis_boolean.index(True) - 1], indis[indis_boolean.index(True)]
+                steps = int(round((lng - start) / 10, -2))
+
+                if steps <= 10:
+                    srt.insert(start + [element - x <= 0 for x in srt[start:lng + 1]].index(True), element)
+                    break
+        else:
+            start, lng = len(srt), 0
+            while any([element - x <= 0 for x in srt[start:lng - 1:-steps]]):
+                indis = [x for x in range(start, lng - 1, -steps)]
+                indis_boolean = [element - x <= 0 for x in srt[start:lng - 1:-steps]]
+                print(indis, '\n', indis_boolean)
+                start, lng = indis[indis_boolean.index(False) - 1], indis[indis_boolean.index(False)]
+                steps = int(round((start - lng) / 10, -2))
+
+                if steps <= 10:
+                    srt.insert(lng + [element - x <= 0 for x in srt[lng:start + 1]].index(False), element)
+                    break
     return srt
 
 
