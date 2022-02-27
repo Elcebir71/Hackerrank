@@ -4,7 +4,7 @@ import random
 import re
 import sys
 import time
-from collections import Counter,defaultdict
+from collections import Counter, defaultdict
 
 
 #
@@ -20,33 +20,32 @@ def activityNotifications(expenditure, d):
     start1 = time.process_time()
     count, med, s, counter = 0, d // 2, 0, defaultdict(int)
     rng = set(expenditure[:d])
-    counter = {x: expenditure[:d].count(x) for x in rng}
-    counter = defaultdict(int,counter)
+    counter = defaultdict(int, {x: expenditure[:d].count(x) for x in rng})
     count_ord = {key: (s := s + val) for key, val in counter.items()}
 
     if d % 2 == 0:
         for index, arg in enumerate(expenditure[d:]):
-            med_dn = [[x, y] for x, y in count_ord.items() if y <= med][-1]
-            med_up = [[x, y] for x, y in count_ord.items() if y > med][0]
+            med_dn = next([x, y] for x, y in reversed(count_ord.items()) if y <= med)
+            med_up = next([x, y] for x, y in count_ord.items() if y > med)
             pop1 = expenditure[index]
             if med_dn[1] < med:
                 med1 = med2 = med_up[0]
             else:
                 med1, med2 = med_dn[0], med_up[0]
-            if med1+med2 <= arg:
+            if med1 + med2 <= arg:
                 count += 1
             counter[pop1] -= 1
             counter[arg] += 1
             s = 0
             count_ord = {key: (s := s + val) for key, val in counter.items()}
     else:
+        md = []
+
         for index, arg in enumerate(expenditure[d:]):
-            med_dn = [[x, y] for x, y in count_ord.items() if y <= med][-1]
-            med_up = [[x, y] for x, y in count_ord.items() if y > med][0]
+            med_dn = next([x, y] for x, y in reversed(count_ord.items()) if y < med+1)
+            med_up = next([x, y] for x, y in count_ord.items() if y >= med+1)
             pop1 = expenditure[index]
-            if med_dn[1] <= med-1:
-                med1 = med_dn[0]
-            else:
+            if med_dn[1] <= med + 1:
                 med1 = med_up[0]
             if 2 * med1 <= arg:
                 count += 1
