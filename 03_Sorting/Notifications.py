@@ -26,11 +26,8 @@ def activityNotifications(expenditure, d):
     ind = d // 2
     for key,val in enumerate(k[:d]):
         ase[val] += 1
-
-    ase = {k: v for k, v in sorted(ase.items(), key=lambda x: x[0])}
-    s = 0
-    down, up = d//2-9, d//2
-    sum_cum = [x[0] for x in ase.items() if down <= (s := s+x[1]) <= up]
+    asd = ase.items()
+    asd = sorted(asd)
 
     if d % 2 != 0:
         for indx, arr in enumerate(expenditure[d:]):
@@ -46,11 +43,10 @@ def activityNotifications(expenditure, d):
 
             if 0 <= m[ind] + m[ind - 1] <= arr:
                 count += 1
-                print(indx, m.index(k[indx]))
                 m.pop(m.index(k[indx]))
                 ordinary_sort(k, m, arr)
             else:
-                print(indx, m.index(k[indx]))
+
                 m.pop(m.index(k[indx]))
                 ordinary_sort(k, m, arr)
     print(count)
