@@ -14,19 +14,35 @@ import sys
 #
 
 def countInversions(arr):
-    # Write your code here
-    res = countSwaps(arr)
-    print(res)
-    return res
-def countSwaps(a):
-    countdown, i, lng, = 0, 0, len(a)
-    while i is not None and any((x - y > 0 for x, y in zip(a[i:lng - 1], a[i+1:]))):
-        i = next((i for i, x, y in zip(range(lng - 1), a[:lng - 1], a[1:]) if x - y > 0), None)
-        a[i], a[i + 1] = a[i + 1], a[i]
-        i += 1
-        countdown += 1
-    return countdown
+    global swap
+    swap, temp = 0, arr.copy()
+    if len(arr) > 1:
+        hlf = len(arr) // 2
+        L = temp[:hlf]
+        R = temp[hlf:]
+        countInversions(L)
+        countInversions(R)
+        i = j = k = 0
+        while i < len(L) and j < len(R):
+            if L[i] < R[j]:
+                temp[k] = L[i]
+                i += 1
+            else:
+                temp[k] = R[j]
+                j += 1
+            k += 1
+        swap += j
 
+        while i < len(L):
+            temp[k] = L[i]
+            i += 1
+            k += 1
+        while j < len(R):
+            temp[k] = R[j]
+            j += 1
+            k += 1
+
+    return swap
 
 
 if __name__ == '__main__':
@@ -40,6 +56,7 @@ if __name__ == '__main__':
         arr = list(map(int, input().rstrip().split()))
 
         result = countInversions(arr)
+        print(result)
 
         #fptr.write(str(result) + '\n')
 
