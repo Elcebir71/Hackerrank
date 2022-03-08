@@ -5,7 +5,6 @@ import re
 import sys
 
 
-
 #
 # Complete the 'countInversions' function below.
 #
@@ -14,39 +13,40 @@ import sys
 #
 
 def countInversions(arr):
-    global swap
-    swap, temp = 0, arr.copy()
+
+    return merge_sort(arr)[0]
+
+def merge_sort(arr):
     if len(arr) > 1:
-        hlf = len(arr) // 2
-        L = temp[:hlf]
-        R = temp[hlf:]
-        countInversions(L)
-        countInversions(R)
-        i = j = k = 0
-        while i < len(L) and j < len(R):
-            if L[i] < R[j]:
-                temp[k] = L[i]
-                i += 1
-            else:
-                temp[k] = R[j]
-                j += 1
-            k += 1
-        swap += j
+        hlf, swap = len(arr) // 2, 0
+        swap_l, L = merge_sort(arr[:hlf])
+        swap_r, R = merge_sort(arr[hlf:])
+        swap_m, result = merge(L, R)
+        return swap_m + swap_l + swap_r, result
+    return 0, arr
 
-        while i < len(L):
-            temp[k] = L[i]
+
+
+def merge(arr1, arr2):
+    temp, swap, i, j, m, n = [], 0, 0, 0, len(arr1), len(arr2)
+    L, R = arr1, arr2
+    app = temp.append
+    while i < m and j < n:
+        if L[i] <= R[j]:
+            app(L[i])
             i += 1
-            k += 1
-        while j < len(R):
-            temp[k] = R[j]
+        else:
+            app(R[j])
             j += 1
-            k += 1
-
-    return swap
+            swap += m - i
+            # print(swap)
+        temp += L[i:]
+        temp += R[j:]
+    return swap, temp
 
 
 if __name__ == '__main__':
-    #fptr = open(os.environ['OUTPUT_PATH'], 'w')
+    # fptr = open(os.environ['OUTPUT_PATH'], 'w')
 
     t = int(input().strip())
 
@@ -58,6 +58,4 @@ if __name__ == '__main__':
         result = countInversions(arr)
         print(result)
 
-        #fptr.write(str(result) + '\n')
-
-    #fptr.close()
+        # fptr.write(str(result) + '\n')
