@@ -13,35 +13,33 @@ import sys
 #
 
 def countInversions(arr):
-
     return merge_sort(arr)[0]
+
 
 def merge_sort(arr):
     if len(arr) > 1:
         hlf, swap = len(arr) // 2, 0
         swap_l, L = merge_sort(arr[:hlf])
         swap_r, R = merge_sort(arr[hlf:])
-        swap_m, result = merge(L, R)
-        return swap_m + swap_l + swap_r, result
+        swap_m, res = merge(L, R)
+        return swap_m + swap_l + swap_r, res
     return 0, arr
-
 
 
 def merge(arr1, arr2):
     temp, swap, i, j, m, n = [], 0, 0, 0, len(arr1), len(arr2)
-    L, R = arr1, arr2
     app = temp.append
     while i < m and j < n:
-        if L[i] <= R[j]:
-            app(L[i])
+        if arr1[i] <= arr2[j]:
+            app(arr1[i])
             i += 1
         else:
-            app(R[j])
+            app(arr2[j])
             j += 1
             swap += m - i
             # print(swap)
-        temp += L[i:]
-        temp += R[j:]
+    temp += arr1[i:]
+    temp += arr2[j:]
     return swap, temp
 
 
